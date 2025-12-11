@@ -1,0 +1,101 @@
+{
+  "common": {
+    "appName": "GPULaw AI Legal Assistant",
+    "welcome": "Welcome",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "cases": "Cases",
+    "documents": "Documents",
+    "generate": "Generate",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "search": "Search"
+  },
+  "home": {
+    "hero": {
+      "title": "AI-Powered Legal Assistant for Cryptocurrency Compliance",
+      "subtitle": "Streamline your legal documentation with advanced AI technology specialized in crypto regulations",
+      "cta": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Comprehensive Legal Solutions",
+      "ai": {
+        "title": "AI-Powered Document Generation",
+        "description": "Generate professional legal documents with Claude AI assistance"
+      },
+      "compliance": {
+        "title": "Crypto Compliance Expertise",
+        "description": "Specialized templates for cryptocurrency regulatory requirements"
+      },
+      "multilingual": {
+        "title": "Multi-language Support",
+        "description": "Documents available in English, Traditional Chinese, and Simplified Chinese"
+      },
+      "management": {
+        "title": "Case Management",
+        "description": "Organize and track all your legal cases in one place"
+      }
+    }
+  },
+  "cases": {
+    "title": "Case Management",
+    "newCase": "New Case",
+    "caseDetails": "Case Details",
+    "clientName": "Client Name",
+    "category": "Category",
+    "status": "Status",
+    "description": "Description",
+    "categories": {
+      "CRYPTO_EXCHANGE_COMPLIANCE": "Crypto Exchange Compliance",
+      "ICO_LEGAL_OPINION": "ICO Legal Opinion",
+      "AML_COMPLIANCE": "AML Compliance",
+      "USER_AGREEMENT": "User Agreement",
+      "REGULATORY_FILING": "Regulatory Filing",
+      "LICENSING": "Licensing",
+      "TOKEN_CLASSIFICATION": "Token Classification",
+      "SMART_CONTRACT_AUDIT": "Smart Contract Audit"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "IN_PROGRESS": "In Progress",
+      "REVIEW": "Under Review",
+      "COMPLETED": "Completed",
+      "ARCHIVED": "Archived"
+    }
+  },
+  "documents": {
+    "title": "Legal Documents",
+    "newDocument": "New Document",
+    "generateWithAI": "Generate with AI",
+    "documentType": "Document Type",
+    "selectTemplate": "Select Template",
+    "types": {
+      "LEGAL_OPINION": "Legal Opinion",
+      "COMPLIANCE_REPORT": "Compliance Report",
+      "USER_AGREEMENT": "User Agreement",
+      "PRIVACY_POLICY": "Privacy Policy",
+      "REGULATORY_FILING": "Regulatory Filing",
+      "LICENSE_APPLICATION": "License Application",
+      "CONTRACT": "Contract",
+      "MEMO": "Memo"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "AI_GENERATED": "AI Generated",
+      "UNDER_REVIEW": "Under Review",
+      "APPROVED": "Approved",
+      "FINALIZED": "Finalized"
+    }
+  },
+  "ai": {
+    "generating": "Generating document with AI...",
+    "prompt": "Describe the legal document you need",
+    "context": "Additional Context",
+    "generate": "Generate Document"
+  }
+}

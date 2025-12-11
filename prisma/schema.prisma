@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(LAWYER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  cases         Case[]
+  documents     Document[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  LAWYER
+  ASSISTANT
+  CLIENT
+}
+
+model Case {
+  id          String     @id @default(cuid())
+  title       String
+  clientName  String
+  description String?
+  category    CaseCategory
+  status      CaseStatus @default(DRAFT)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  documents   Document[]
+
+  @@map("cases")
+}
+
+enum CaseCategory {
+  CRYPTO_EXCHANGE_COMPLIANCE
+  ICO_LEGAL_OPINION
+  AML_COMPLIANCE
+  USER_AGREEMENT
+  REGULATORY_FILING
+  LICENSING
+  TOKEN_CLASSIFICATION
+  SMART_CONTRACT_AUDIT
+}
+
+enum CaseStatus {
+  DRAFT
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+  ARCHIVED
+}
+
+model Document {
+  id          String         @id @default(cuid())
+  title       String
+  content     String         @db.Text
+  type        DocumentType
+  status      DocumentStatus @default(DRAFT)
+  language    String         @default("en")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  caseId      String
+  case        Case           @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  templateId  String?
+  template    DocumentTemplate? @relation(fields: [templateId], references: [id])
+
+  @@map("documents")
+}
+
+enum DocumentType {
+  LEGAL_OPINION
+  COMPLIANCE_REPORT
+  USER_AGREEMENT
+  PRIVACY_POLICY
+  REGULATORY_FILING
+  LICENSE_APPLICATION
+  CONTRACT
+  MEMO
+}
+
+enum DocumentStatus {
+  DRAFT
+  AI_GENERATED
+  UNDER_REVIEW
+  APPROVED
+  FINALIZED
+}
+
+model DocumentTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    CaseCategory
+  content     String   @db.Text
+  language    String   @default("en")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  documents   Document[]
+
+  @@map("document_templates")
+}

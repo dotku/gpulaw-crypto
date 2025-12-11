@@ -1,0 +1,101 @@
+{
+  "common": {
+    "appName": "GPULaw AI 法務助理",
+    "welcome": "歡迎",
+    "login": "登入",
+    "logout": "登出",
+    "dashboard": "控制台",
+    "cases": "案件",
+    "documents": "文檔",
+    "generate": "生成",
+    "save": "儲存",
+    "cancel": "取消",
+    "edit": "編輯",
+    "delete": "刪除",
+    "create": "建立",
+    "search": "搜尋"
+  },
+  "home": {
+    "hero": {
+      "title": "AI 驅動的加密貨幣合規法務助理",
+      "subtitle": "以專業的 AI 技術簡化您的法律文書工作，專注於加密貨幣監管",
+      "cta": "開始使用",
+      "learnMore": "了解更多"
+    },
+    "features": {
+      "title": "全方位法律解決方案",
+      "ai": {
+        "title": "AI 驅動文檔生成",
+        "description": "利用 Claude AI 輔助生成專業法律文件"
+      },
+      "compliance": {
+        "title": "加密貨幣合規專業",
+        "description": "針對加密貨幣監管要求的專業模板"
+      },
+      "multilingual": {
+        "title": "多語言支援",
+        "description": "支援英文、繁體中文和簡體中文文檔"
+      },
+      "management": {
+        "title": "案件管理",
+        "description": "在一個地方組織和追蹤所有法律案件"
+      }
+    }
+  },
+  "cases": {
+    "title": "案件管理",
+    "newCase": "新增案件",
+    "caseDetails": "案件詳情",
+    "clientName": "客戶名稱",
+    "category": "類別",
+    "status": "狀態",
+    "description": "描述",
+    "categories": {
+      "CRYPTO_EXCHANGE_COMPLIANCE": "加密貨幣交易所合規",
+      "ICO_LEGAL_OPINION": "ICO 法律意見書",
+      "AML_COMPLIANCE": "反洗錢合規",
+      "USER_AGREEMENT": "用戶協議",
+      "REGULATORY_FILING": "監管申報",
+      "LICENSING": "牌照申請",
+      "TOKEN_CLASSIFICATION": "代幣分類",
+      "SMART_CONTRACT_AUDIT": "智能合約審計"
+    },
+    "statuses": {
+      "DRAFT": "草稿",
+      "IN_PROGRESS": "進行中",
+      "REVIEW": "審查中",
+      "COMPLETED": "已完成",
+      "ARCHIVED": "已歸檔"
+    }
+  },
+  "documents": {
+    "title": "法律文檔",
+    "newDocument": "新增文檔",
+    "generateWithAI": "使用 AI 生成",
+    "documentType": "文檔類型",
+    "selectTemplate": "選擇模板",
+    "types": {
+      "LEGAL_OPINION": "法律意見書",
+      "COMPLIANCE_REPORT": "合規報告",
+      "USER_AGREEMENT": "用戶協議",
+      "PRIVACY_POLICY": "隱私政策",
+      "REGULATORY_FILING": "監管申報",
+      "LICENSE_APPLICATION": "牌照申請",
+      "CONTRACT": "合同",
+      "MEMO": "備忘錄"
+    },
+    "statuses": {
+      "DRAFT": "草稿",
+      "AI_GENERATED": "AI 生成",
+      "UNDER_REVIEW": "審查中",
+      "APPROVED": "已批准",
+      "FINALIZED": "已定稿"
+    }
+  },
+  "ai": {
+    "generating": "正在使用 AI 生成文檔...",
+    "prompt": "描述您需要的法律文件",
+    "context": "附加上下文",
+    "generate": "生成文檔"
+  }
+}
