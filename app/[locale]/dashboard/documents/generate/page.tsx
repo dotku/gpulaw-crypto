@@ -104,9 +104,6 @@ This opinion is provided based on the information available and current regulato
 `;
 
       setGeneratedContent(mockDocument);
-    } catch (error) {
-      console.error('Error generating document:', error);
-      alert('Failed to generate document');
     } finally {
       setIsGenerating(false);
     }
