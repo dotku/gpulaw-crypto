@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma';
 // GET /api/documents/[id] - Get single document
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const document = await prisma.document.findUnique({
       where: { id },
@@ -47,10 +47,10 @@ export async function GET(
 // PUT /api/documents/[id] - Update document
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { title, content, status, type, language } = body;
 
@@ -100,10 +100,10 @@ export async function PUT(
 // DELETE /api/documents/[id] - Delete document
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     await prisma.document.delete({
       where: { id },
