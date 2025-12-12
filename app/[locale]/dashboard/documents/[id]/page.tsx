@@ -420,7 +420,7 @@ export default function DocumentDetailPage() {
                   <textarea
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
-                    className="w-full min-h-[400px] rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full min-h-[500px] lg:min-h-[640px] rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 ) : (
                   <div className="prose dark:prose-invert max-w-none">
