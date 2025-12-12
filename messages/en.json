@@ -90,7 +90,8 @@
       "subtitle": "Ask for improvements, rewrites, or clauses to add",
       "empty": "Start a chat to get AI suggestions for this document.",
       "placeholder": "Ask the AI to tighten language, add clauses, or summarize...",
-      "send": "Ask AI"
+      "send": "Ask AI",
+      "insert": "Insert into editor"
     },
     "errors": {
       "notFound": "Document not found"

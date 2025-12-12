@@ -90,7 +90,8 @@
       "subtitle": "询问改进、重写或添加条款的建议",
       "empty": "开始聊天，获取针对本文件的 AI 建议。",
       "placeholder": "让 AI 优化措辞、添加条款或生成摘要……",
-      "send": "询问 AI"
+      "send": "询问 AI",
+      "insert": "插入到编辑器"
     },
     "errors": {
       "notFound": "文档不存在"

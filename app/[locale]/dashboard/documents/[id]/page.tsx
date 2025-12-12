@@ -54,6 +54,14 @@ export default function DocumentDetailPage() {
   const [isChatting, setIsChatting] = useState(false);
   const [chatError, setChatError] = useState('');
 
+  const insertIntoEditor = (text: string) => {
+    setIsEditing(true);
+    setEditedContent((prev) => {
+      if (!prev) return text;
+      return `${prev}\n\n${text}`;
+    });
+  };
+
   const markdownComponents = useMemo(
     () => ({
       h1: ({ children }: any) => (
@@ -273,139 +281,141 @@ export default function DocumentDetailPage() {
 
   return (
     <div className="p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <Link
-            href={`/${locale}/dashboard/documents`}
-            className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t('common.back')}
-          </Link>
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-start lg:gap-6">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-6">
+            <Link
+              href={`/${locale}/dashboard/documents`}
+              className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {t('common.back')}
+            </Link>
 
-          {documentData?.status === 'AI_GENERATED' && (
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200 text-sm">
-              <Sparkles className="h-4 w-4" />
-              {t('documents.statuses.AI_GENERATED')}
-            </span>
-          )}
-        </div>
+            {documentData?.status === 'AI_GENERATED' && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200 text-sm">
+                <Sparkles className="h-4 w-4" />
+                {t('documents.statuses.AI_GENERATED')}
+              </span>
+            )}
+          </div>
 
-        {isLoading ? (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
-            <Loader2 className="h-12 w-12 text-purple-600 mx-auto mb-4 animate-spin" />
-            <p className="text-slate-600 dark:text-slate-300">
-              {t('common.loading')}
-            </p>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-red-800 dark:text-red-200">
-            {error}
-          </div>
-        ) : documentData ? (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-              <div className="flex items-start gap-3 mb-3">
-                <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400 mt-1" />
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    {isEditing ? (
-                      <input
-                        value={editedTitle}
-                        onChange={(e) => setEditedTitle(e.target.value)}
-                        className="text-2xl font-semibold text-slate-900 dark:text-white bg-transparent border-b border-slate-300 dark:border-slate-700 focus:outline-none"
-                      />
-                    ) : (
-                      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
-                        {documentData.title}
-                      </h1>
+          {isLoading ? (
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
+              <Loader2 className="h-12 w-12 text-purple-600 mx-auto mb-4 animate-spin" />
+              <p className="text-slate-600 dark:text-slate-300">
+                {t('common.loading')}
+              </p>
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-red-800 dark:text-red-200">
+              {error}
+            </div>
+          ) : documentData ? (
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-start gap-3 mb-3">
+                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400 mt-1" />
+                  <div className="flex-1">
+                    <div className="flex flex-col gap-2 mb-2 items-start">
+                      {isEditing ? (
+                        <input
+                          value={editedTitle}
+                          onChange={(e) => setEditedTitle(e.target.value)}
+                          className="w-full text-2xl font-semibold text-slate-900 dark:text-white bg-transparent border-b border-slate-300 dark:border-slate-700 focus:outline-none"
+                        />
+                      ) : (
+                        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+                          {documentData.title}
+                        </h1>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                            documentData.status
+                          )}`}
+                        >
+                          {t(`documents.statuses.${documentData.status}`)}
+                        </span>
+                        <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs">
+                          {t(`documents.types.${documentData.type}`)}
+                        </span>
+                        <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs uppercase">
+                          {documentData.language}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      {t('documents.detail.createdOn')}: {formattedDate}
+                    </p>
+                    {documentData.case && (
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        {t('cases.title')}: {documentData.case.title} &bull;{' '}
+                        {t('cases.category')}: {documentData.case.category}
+                        {documentData.case.clientName
+                          ? ` • ${documentData.case.clientName}`
+                          : ''}
+                      </p>
                     )}
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
-                        documentData.status
-                      )}`}
-                    >
-                      {t(`documents.statuses.${documentData.status}`)}
-                    </span>
-                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs">
-                      {t(`documents.types.${documentData.type}`)}
-                    </span>
-                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs uppercase">
-                      {documentData.language}
-                    </span>
+                    {documentData.template?.name && (
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        Template: {documentData.template.name}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {t('documents.detail.createdOn')}: {formattedDate}
-                  </p>
-                  {documentData.case && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      {t('cases.title')}: {documentData.case.title} &bull;{' '}
-                      {t('cases.category')}: {documentData.case.category}
-                      {documentData.case.clientName
-                        ? ` • ${documentData.case.clientName}`
-                        : ''}
-                    </p>
-                  )}
-                  {documentData.template?.name && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Template: {documentData.template.name}
-                    </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDownload}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-60"
+                    disabled={isSaving}
+                  >
+                    <Download className="h-4 w-4" />
+                    {t('documents.actions.download')}
+                  </button>
+                  {!isEditing ? (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition-colors"
+                    >
+                      {t('common.edit')}
+                    </button>
+                  ) : (
+                    <>
+                      <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                        <input
+                          type="checkbox"
+                          checked={aiFormatEnabled}
+                          onChange={(e) => setAiFormatEnabled(e.target.checked)}
+                          className="h-4 w-4"
+                        />
+                        {t('documents.formatting.aiAssist')}
+                      </label>
+                      <button
+                        onClick={handleSave}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-60"
+                        disabled={isSaving}
+                      >
+                        {isSaving ? t('common.loading') : t('common.save')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditedTitle(documentData.title);
+                          setEditedContent(documentData.content);
+                          setIsEditing(false);
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition-colors"
+                        disabled={isSaving}
+                      >
+                        {t('common.cancel')}
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleDownload}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-60"
-                  disabled={isSaving}
-                >
-                  <Download className="h-4 w-4" />
-                  {t('documents.actions.download')}
-                </button>
-                {!isEditing ? (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition-colors"
-                  >
-                    {t('common.edit')}
-                  </button>
-                ) : (
-                  <>
-                    <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                      <input
-                        type="checkbox"
-                        checked={aiFormatEnabled}
-                        onChange={(e) => setAiFormatEnabled(e.target.checked)}
-                        className="h-4 w-4"
-                      />
-                      {t('documents.formatting.aiAssist')}
-                    </label>
-                    <button
-                      onClick={handleSave}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-60"
-                      disabled={isSaving}
-                    >
-                      {isSaving ? t('common.loading') : t('common.save')}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditedTitle(documentData.title);
-                        setEditedContent(documentData.content);
-                        setIsEditing(false);
-                      }}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition-colors"
-                      disabled={isSaving}
-                    >
-                      {t('common.cancel')}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="p-6 grid grid-cols-1 xl:grid-cols-[2fr,1fr] gap-6">
-              <div>
+              <div className="p-6">
                 {isEditing ? (
                   <textarea
                     value={editedContent}
@@ -423,70 +433,81 @@ export default function DocumentDetailPage() {
                   </div>
                 )}
               </div>
+            </div>
+          ) : null}
+        </div>
 
-              <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex flex-col h-full">
-                <div className="mb-3">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                    {t('documents.assistant.title')}
-                  </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                    {t('documents.assistant.subtitle')}
-                  </p>
-                </div>
+        <aside className="w-full lg:w-96 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex flex-col h-full lg:sticky lg:top-8 lg:max-h-[calc(100vh-140px)]">
+          <div className="mb-3">
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">
+              {t('documents.assistant.title')}
+            </p>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
+              {t('documents.assistant.subtitle')}
+            </p>
+          </div>
 
-                <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
-                  {chatMessages.length === 0 ? (
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
-                      {t('documents.assistant.empty')}
-                    </div>
-                  ) : (
-                    chatMessages.map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`p-3 rounded-lg text-sm ${
-                          msg.role === 'user'
-                            ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100'
-                            : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700'
-                        }`}
-                      >
-                        {msg.text}
-                      </div>
-                    ))
-                  )}
-                  {chatError && (
-                    <div className="text-sm text-red-600 dark:text-red-300">
-                      {chatError}
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <textarea
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder={t('documents.assistant.placeholder')}
-                    className="w-full h-24 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={handleChatSend}
-                      disabled={isChatting || !chatInput.trim()}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-60"
-                    >
-                      {isChatting ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Sparkles className="h-4 w-4" />
-                      )}
-                      {t('documents.assistant.send')}
-                    </button>
-                  </div>
-                </div>
+          <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1 min-h-0">
+            {chatMessages.length === 0 ? (
+              <div className="text-sm text-slate-500 dark:text-slate-400">
+                {t('documents.assistant.empty')}
               </div>
+            ) : (
+              chatMessages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`p-3 rounded-lg text-sm ${
+                    msg.role === 'user'
+                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100'
+                      : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  {msg.role === 'ai' && (
+                    <div className="mt-2 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => insertIntoEditor(msg.text)}
+                        className="text-xs inline-flex items-center gap-1 px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white transition-colors"
+                      >
+                        {t('documents.assistant.insert')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+            {chatError && (
+              <div className="text-sm text-red-600 dark:text-red-300">
+                {chatError}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <textarea
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder={t('documents.assistant.placeholder')}
+              className="w-full h-24 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleChatSend}
+                disabled={isChatting || !chatInput.trim()}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-60"
+              >
+                {isChatting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="h-4 w-4" />
+                )}
+                {t('documents.assistant.send')}
+              </button>
             </div>
           </div>
-        ) : null}
+        </aside>
       </div>
     </div>
   );
