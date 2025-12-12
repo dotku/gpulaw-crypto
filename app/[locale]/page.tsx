@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Scale,
@@ -9,11 +10,15 @@ import {
   FolderOpen,
   Shield,
   FileText,
-  ArrowRight
+  ArrowRight,
+  Languages
 } from 'lucide-react';
+import { locales, localeNames } from '@/i18n/config';
 
 export default function Home() {
   const t = useTranslations();
+  const params = useParams();
+  const currentLocale = params.locale as string;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
@@ -28,6 +33,23 @@ export default function Home() {
               </span>
             </div>
             <nav className="flex items-center gap-6">
+              {/* Language Switcher */}
+              <div className="flex items-center gap-2 border-r border-slate-300 dark:border-slate-700 pr-6">
+                <Languages className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                {locales.map((locale) => (
+                  <Link
+                    key={locale}
+                    href={`/${locale}`}
+                    className={`text-sm font-medium transition-colors ${
+                      currentLocale === locale
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                    }`}
+                  >
+                    {localeNames[locale]}
+                  </Link>
+                ))}
+              </div>
               <Link
                 href="/dashboard"
                 className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
