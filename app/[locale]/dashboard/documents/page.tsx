@@ -28,6 +28,7 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   // Fetch documents on mount
   useEffect(() => {
@@ -69,6 +70,47 @@ export default function DocumentsPage() {
     const matchesType = typeFilter === 'all' || doc.type === typeFilter;
     return matchesSearch && matchesType;
   });
+
+  const handleDownload = async (
+    e: React.MouseEvent,
+    docId: string,
+    title: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof window === 'undefined') return;
+
+    setDownloadingId(docId);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/documents/${docId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch document for download');
+      }
+
+      const data = await response.json();
+      const content = data.document?.content;
+      if (!content) {
+        throw new Error('No content available to download');
+      }
+
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = window.document.createElement('a');
+      a.href = url;
+      a.download = `${title || 'document'}.md`;
+      window.document.body.appendChild(a);
+      a.click();
+      window.document.body.removeChild(a);
+    } catch (err: any) {
+      console.error('Download failed:', err);
+      setError(err.message || 'Failed to download document');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -190,9 +232,10 @@ export default function DocumentsPage() {
             </div>
           ) : (
             filteredDocuments.map((doc) => (
-              <div
+              <Link
                 key={doc.id}
-                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition-shadow"
+                href={`/${locale}/dashboard/documents/${doc.id}`}
+                className="block bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-3 flex-1">
@@ -238,12 +281,17 @@ export default function DocumentsPage() {
                       year: 'numeric',
                     })}
                   </span>
-                  <button className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                    <Download className="h-4 w-4" />
-                    Download
+                  <button
+                    type="button"
+                    onClick={(e) => handleDownload(e, doc.id, doc.title)}
+                    className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-60"
+                    disabled={downloadingId === doc.id}
+                  >
+                    <Download className={`h-4 w-4 ${downloadingId === doc.id ? 'animate-spin' : ''}`} />
+                    {downloadingId === doc.id ? 'Downloading...' : 'Download'}
                   </button>
                 </div>
-              </div>
+              </Link>
             ))
           )}
         </div>

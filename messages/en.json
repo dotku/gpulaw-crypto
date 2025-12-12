@@ -3,18 +3,20 @@
     "appName": "GPULaw AI Legal Assistant",
     "welcome": "Welcome",
     "login": "Login",
-    "logout": "Logout",
-    "dashboard": "Dashboard",
-    "cases": "Cases",
-    "documents": "Documents",
-    "generate": "Generate",
-    "save": "Save",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "create": "Create",
-    "search": "Search"
-  },
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "cases": "Cases",
+  "documents": "Documents",
+  "generate": "Generate",
+  "back": "Back",
+  "save": "Save",
+  "cancel": "Cancel",
+  "edit": "Edit",
+  "delete": "Delete",
+  "create": "Create",
+  "search": "Search",
+  "loading": "Loading"
+},
   "home": {
     "hero": {
       "title": "AI-Powered Legal Assistant for Cryptocurrency Compliance",
@@ -72,12 +74,31 @@
     "title": "Legal Documents",
     "newDocument": "New Document",
     "generateWithAI": "Generate with AI",
-    "documentType": "Document Type",
+  "documentType": "Document Type",
     "selectTemplate": "Select Template",
-    "types": {
-      "LEGAL_OPINION": "Legal Opinion",
-      "COMPLIANCE_REPORT": "Compliance Report",
-      "USER_AGREEMENT": "User Agreement",
+    "actions": {
+      "download": "Download"
+    },
+    "detail": {
+      "createdOn": "Created on"
+    },
+    "formatting": {
+      "aiAssist": "AI formatting (add line breaks)"
+    },
+    "assistant": {
+      "title": "AI editor assistant",
+      "subtitle": "Ask for improvements, rewrites, or clauses to add",
+      "empty": "Start a chat to get AI suggestions for this document.",
+      "placeholder": "Ask the AI to tighten language, add clauses, or summarize...",
+      "send": "Ask AI"
+    },
+    "errors": {
+      "notFound": "Document not found"
+    },
+  "types": {
+    "LEGAL_OPINION": "Legal Opinion",
+    "COMPLIANCE_REPORT": "Compliance Report",
+    "USER_AGREEMENT": "User Agreement",
       "PRIVACY_POLICY": "Privacy Policy",
       "REGULATORY_FILING": "Regulatory Filing",
       "LICENSE_APPLICATION": "License Application",

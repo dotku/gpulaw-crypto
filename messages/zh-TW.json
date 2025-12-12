@@ -8,12 +8,14 @@
     "cases": "案件",
     "documents": "文檔",
     "generate": "生成",
+    "back": "返回",
     "save": "儲存",
     "cancel": "取消",
     "edit": "編輯",
     "delete": "刪除",
     "create": "建立",
-    "search": "搜尋"
+    "search": "搜尋",
+    "loading": "載入中"
   },
   "home": {
     "hero": {
@@ -74,6 +76,25 @@
     "generateWithAI": "使用 AI 生成",
     "documentType": "文檔類型",
     "selectTemplate": "選擇模板",
+    "actions": {
+      "download": "下載"
+    },
+    "detail": {
+      "createdOn": "建立時間"
+    },
+    "formatting": {
+      "aiAssist": "AI 格式優化（自動換行）"
+    },
+    "assistant": {
+      "title": "AI 編輯助手",
+      "subtitle": "詢問改進、重寫或添加條款的建議",
+      "empty": "開始聊天，獲取針對本文件的 AI 建議。",
+      "placeholder": "讓 AI 優化措辭、添加條款或生成摘要……",
+      "send": "詢問 AI"
+    },
+    "errors": {
+      "notFound": "文檔不存在"
+    },
     "types": {
       "LEGAL_OPINION": "法律意見書",
       "COMPLIANCE_REPORT": "合規報告",
