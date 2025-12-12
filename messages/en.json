@@ -42,6 +42,17 @@
         "title": "Case Management",
         "description": "Organize and track all your legal cases in one place"
       }
+    },
+    "useCases": {
+      "title": "Specialized Legal Documents",
+      "items": {
+        "exchangeCompliance": "Crypto Exchange Compliance",
+        "icoOpinions": "ICO Legal Opinions",
+        "amlReports": "AML Compliance Reports",
+        "tokenClassification": "Token Classification",
+        "smartContractAudits": "Smart Contract Audits",
+        "regulatoryFilings": "Regulatory Filings"
+      }
     }
   },
   "cases": {

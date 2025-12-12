@@ -42,6 +42,17 @@
         "title": "案件管理",
         "description": "在一个地方组织和追踪所有法律案件"
       }
+    },
+    "useCases": {
+      "title": "专业法律文件",
+      "items": {
+        "exchangeCompliance": "加密货币交易所合规",
+        "icoOpinions": "ICO 法律意见书",
+        "amlReports": "反洗钱合规报告",
+        "tokenClassification": "代币分类",
+        "smartContractAudits": "智能合约审计",
+        "regulatoryFilings": "监管申报"
+      }
     }
   },
   "cases": {
