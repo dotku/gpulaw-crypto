@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/documents/[id] - Get single document
 export async function GET(
@@ -29,16 +29,16 @@ export async function GET(
 
     if (!document) {
       return NextResponse.json(
-        { error: 'Document not found' },
+        { error: "Document not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({ success: true, document });
   } catch (error) {
-    console.error('Error fetching document:', error);
+    console.error("Error fetching document:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch document' },
+      { error: "Failed to fetch document" },
       { status: 500 }
     );
   }
@@ -77,21 +77,21 @@ export async function PUT(
 
     return NextResponse.json({
       success: true,
-      message: 'Document updated successfully!',
+      message: "Document updated successfully!",
       document,
     });
   } catch (error: any) {
-    console.error('Error updating document:', error);
+    console.error("Error updating document:", error);
 
-    if (error.code === 'P2025') {
+    if (error.code === "P2025") {
       return NextResponse.json(
-        { error: 'Document not found' },
+        { error: "Document not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Failed to update document' },
+      { error: "Failed to update document" },
       { status: 500 }
     );
   }
@@ -111,20 +111,20 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Document deleted successfully!',
+      message: "Document deleted successfully!",
     });
   } catch (error: any) {
-    console.error('Error deleting document:', error);
+    console.error("Error deleting document:", error);
 
-    if (error.code === 'P2025') {
+    if (error.code === "P2025") {
       return NextResponse.json(
-        { error: 'Document not found' },
+        { error: "Document not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Failed to delete document' },
+      { error: "Failed to delete document" },
       { status: 500 }
     );
   }
