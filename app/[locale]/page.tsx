@@ -17,14 +17,14 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { locales, localeNames } from '@/i18n/config';
+import { locales, localeNames, type Locale } from '@/i18n/config';
 
 export default function Home() {
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations();
   const params = useParams();
-  const currentLocale = params.locale as string;
+  const currentLocale = params.locale as Locale;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
