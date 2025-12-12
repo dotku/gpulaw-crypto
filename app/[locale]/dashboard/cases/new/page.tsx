@@ -20,16 +20,39 @@ export default function NewCasePage() {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+    setError('');
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch('/api/cases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          userId: 'demo-user', // TODO: Get from auth session
+        }),
+      });
 
-    // Redirect to cases list
-    router.push(`/${locale}/dashboard/cases`);
+      if (!response.ok) {
+        throw new Error('Failed to create case');
+      }
+
+      const data = await response.json();
+
+      // Redirect to the new case detail page
+      router.push(`/${locale}/dashboard/cases/${data.case.id}`);
+    } catch (error: any) {
+      console.error('Error creating case:', error);
+      setError(error.message || 'Failed to create case. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -51,6 +74,13 @@ export default function NewCasePage() {
             Create a new legal case for cryptocurrency compliance
           </p>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-800 dark:text-red-200">
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form

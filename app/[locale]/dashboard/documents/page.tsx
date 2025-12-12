@@ -3,52 +3,21 @@
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Search, Filter, FileText, Sparkles, Download } from 'lucide-react';
-import { useState } from 'react';
+import { Plus, Search, Filter, FileText, Sparkles, Download, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-// Mock data
-const mockDocuments = [
-  {
-    id: '1',
-    title: 'Crypto Exchange ABC - Compliance Opinion',
-    type: 'LEGAL_OPINION',
-    status: 'APPROVED',
-    language: 'en',
-    caseTitle: 'Crypto Exchange ABC Compliance Review',
-    createdAt: new Date('2024-12-08'),
-    isAiGenerated: true,
-  },
-  {
-    id: '2',
-    title: 'TokenCo ICO Legal Analysis',
-    type: 'LEGAL_OPINION',
-    status: 'UNDER_REVIEW',
-    language: 'en',
-    caseTitle: 'TokenCo ICO Legal Opinion',
-    createdAt: new Date('2024-12-07'),
-    isAiGenerated: true,
-  },
-  {
-    id: '3',
-    title: 'DeFi Platform User Agreement',
-    type: 'USER_AGREEMENT',
-    status: 'FINALIZED',
-    language: 'zh-TW',
-    caseTitle: 'DeFi Platform User Agreement',
-    createdAt: new Date('2024-11-20'),
-    isAiGenerated: false,
-  },
-  {
-    id: '4',
-    title: 'NFT Marketplace AML Policy',
-    type: 'COMPLIANCE_REPORT',
-    status: 'DRAFT',
-    language: 'en',
-    caseTitle: 'NFT Marketplace AML Compliance',
-    createdAt: new Date('2024-12-05'),
-    isAiGenerated: true,
-  },
-];
+type Document = {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  language: string;
+  createdAt: Date | string;
+  case?: {
+    title: string;
+    category: string;
+  };
+};
 
 export default function DocumentsPage() {
   const t = useTranslations();
@@ -56,11 +25,47 @@ export default function DocumentsPage() {
   const locale = params.locale as string;
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const filteredDocuments = mockDocuments.filter((doc) => {
+  // Fetch documents on mount
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
+
+  const fetchDocuments = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/documents?userId=demo-user');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch documents');
+      }
+
+      const data = await response.json();
+
+      // Convert date strings to Date objects
+      const documentsWithDates = data.documents.map((doc: any) => ({
+        ...doc,
+        createdAt: new Date(doc.createdAt),
+      }));
+
+      setDocuments(documentsWithDates);
+    } catch (error: any) {
+      console.error('Error fetching documents:', error);
+      setError(error.message || 'Failed to load documents');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredDocuments = documents.filter((doc) => {
     const matchesSearch =
       doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.caseTitle.toLowerCase().includes(searchQuery.toLowerCase());
+      (doc.case?.title || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === 'all' || doc.type === typeFilter;
     return matchesSearch && matchesType;
   });
@@ -146,9 +151,23 @@ export default function DocumentsPage() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-800 dark:text-red-200 mb-6">
+            {error}
+          </div>
+        )}
+
         {/* Documents List */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {filteredDocuments.length === 0 ? (
+          {isLoading ? (
+            <div className="col-span-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
+              <Loader2 className="h-16 w-16 text-purple-600 mx-auto mb-4 animate-spin" />
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                Loading documents...
+              </h3>
+            </div>
+          ) : filteredDocuments.length === 0 ? (
             <div className="col-span-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
               <FileText className="h-16 w-16 text-slate-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
@@ -183,11 +202,11 @@ export default function DocumentsPage() {
                         {doc.title}
                       </h3>
                       <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
-                        {doc.caseTitle}
+                        {doc.case?.title || 'No case'}
                       </p>
                     </div>
                   </div>
-                  {doc.isAiGenerated && (
+                  {doc.status === 'AI_GENERATED' && (
                     <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
                   )}
                 </div>
@@ -210,7 +229,10 @@ export default function DocumentsPage() {
 
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-500 dark:text-slate-400">
-                    {doc.createdAt.toLocaleDateString(locale, {
+                    {(doc.createdAt instanceof Date
+                      ? doc.createdAt
+                      : new Date(doc.createdAt)
+                    ).toLocaleDateString(locale, {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',

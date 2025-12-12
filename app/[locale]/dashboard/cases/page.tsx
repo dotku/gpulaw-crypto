@@ -3,48 +3,20 @@
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Search, Filter, FolderOpen } from 'lucide-react';
-import { useState } from 'react';
+import { Plus, Search, Filter, FolderOpen, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-// Mock data - will be replaced with real database data
-const mockCases = [
-  {
-    id: '1',
-    title: 'Crypto Exchange ABC Compliance Review',
-    clientName: 'Crypto Exchange ABC',
-    category: 'CRYPTO_EXCHANGE_COMPLIANCE',
-    status: 'IN_PROGRESS',
-    createdAt: new Date('2024-12-01'),
-    updatedAt: new Date('2024-12-10'),
-  },
-  {
-    id: '2',
-    title: 'TokenCo ICO Legal Opinion',
-    clientName: 'TokenCo Ltd.',
-    category: 'ICO_LEGAL_OPINION',
-    status: 'REVIEW',
-    createdAt: new Date('2024-11-15'),
-    updatedAt: new Date('2024-12-08'),
-  },
-  {
-    id: '3',
-    title: 'DeFi Platform User Agreement',
-    clientName: 'DeFi Platform Inc.',
-    category: 'USER_AGREEMENT',
-    status: 'COMPLETED',
-    createdAt: new Date('2024-11-01'),
-    updatedAt: new Date('2024-11-20'),
-  },
-  {
-    id: '4',
-    title: 'NFT Marketplace AML Compliance',
-    clientName: 'NFT Marketplace',
-    category: 'AML_COMPLIANCE',
-    status: 'DRAFT',
-    createdAt: new Date('2024-12-05'),
-    updatedAt: new Date('2024-12-05'),
-  },
-];
+type Case = {
+  id: string;
+  title: string;
+  clientName: string;
+  category: string;
+  status: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  description?: string;
+  documents?: any[];
+};
 
 export default function CasesPage() {
   const t = useTranslations();
@@ -52,8 +24,45 @@ export default function CasesPage() {
   const locale = params.locale as string;
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [cases, setCases] = useState<Case[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const filteredCases = mockCases.filter((caseItem) => {
+  // Fetch cases on mount
+  useEffect(() => {
+    fetchCases();
+  }, []);
+
+  const fetchCases = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/cases?userId=demo-user');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch cases');
+      }
+
+      const data = await response.json();
+
+      // Convert date strings to Date objects
+      const casesWithDates = data.cases.map((c: any) => ({
+        ...c,
+        createdAt: new Date(c.createdAt),
+        updatedAt: new Date(c.updatedAt),
+      }));
+
+      setCases(casesWithDates);
+    } catch (error: any) {
+      console.error('Error fetching cases:', error);
+      setError(error.message || 'Failed to load cases');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredCases = cases.filter((caseItem) => {
     const matchesSearch =
       caseItem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       caseItem.clientName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -137,9 +146,23 @@ export default function CasesPage() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-800 dark:text-red-200 mb-6">
+            {error}
+          </div>
+        )}
+
         {/* Cases List */}
         <div className="space-y-4">
-          {filteredCases.length === 0 ? (
+          {isLoading ? (
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
+              <Loader2 className="h-16 w-16 text-blue-600 mx-auto mb-4 animate-spin" />
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                Loading cases...
+              </h3>
+            </div>
+          ) : filteredCases.length === 0 ? (
             <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
               <FolderOpen className="h-16 w-16 text-slate-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
@@ -191,7 +214,10 @@ export default function CasesPage() {
                   </span>
                   <span>
                     Updated{' '}
-                    {caseItem.updatedAt.toLocaleDateString(locale, {
+                    {(caseItem.updatedAt instanceof Date
+                      ? caseItem.updatedAt
+                      : new Date(caseItem.updatedAt)
+                    ).toLocaleDateString(locale, {
                       month: 'short',
                       day: 'numeric',
                     })}
