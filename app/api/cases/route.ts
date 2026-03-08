@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { auditLog } from '@/lib/audit-log';
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!checkRateLimit(ip, { limit: 20, windowMs: 60_000 })) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const body = await request.json();
     const { title, clientName, category, description, userId } = body;
 
@@ -27,6 +34,14 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      auditLog({
+        action: 'case.create',
+        userId: userId || 'demo-user',
+        ip,
+        userAgent: request.headers.get('user-agent') || undefined,
+        metadata: { caseId: newCase.id, title, category },
+      });
+
       return NextResponse.json({
         success: true,
         case: newCase,
@@ -46,6 +61,14 @@ export async function POST(request: NextRequest) {
         updatedAt: new Date(),
         userId: userId || 'demo-user',
       };
+
+      auditLog({
+        action: 'case.create',
+        userId: userId || 'demo-user',
+        ip,
+        userAgent: request.headers.get('user-agent') || undefined,
+        metadata: { caseId: mockCase.id, title, category, demo: true },
+      });
 
       return NextResponse.json({
         success: true,
@@ -67,6 +90,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!checkRateLimit(ip, { limit: 20, windowMs: 60_000 })) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId') || 'demo-user';
 

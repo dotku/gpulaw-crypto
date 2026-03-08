@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateLegalDocument } from '@/lib/ai';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { auditLog } from '@/lib/audit-log';
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!checkRateLimit(ip, { limit: 20, windowMs: 60_000 })) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const body = await request.json();
     const {
       caseId,
@@ -87,6 +94,14 @@ export async function POST(request: NextRequest) {
         console.warn('Database not available for saving document');
       }
     }
+
+    auditLog({
+      action: 'api.generate',
+      userId: userId || 'demo-user',
+      ip,
+      userAgent: request.headers.get('user-agent') || undefined,
+      metadata: { caseId, caseCategory: finalCaseCategory, language, documentId: document?.id },
+    });
 
     return NextResponse.json({
       success: true,

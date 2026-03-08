@@ -129,3 +129,18 @@ model DocumentTemplate {
 
   @@map("document_templates")
 }
+
+// ── Audit Logs (SOC 2 compliance) ──
+model AuditLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  action    String
+  userId    String
+  ip        String?
+  userAgent String?
+  metadata  Json?
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+}
